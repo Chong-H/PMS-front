@@ -33,9 +33,7 @@ import { reactive } from 'vue';
 
 
 const init: Ref<boolean> = ref(true);
-    const isEditing = ref(false);
-    
-    
+const isEditing = ref(false);
 const accs: Ref<AccountDto[]> = ref([] as AccountDto[]);
 
 

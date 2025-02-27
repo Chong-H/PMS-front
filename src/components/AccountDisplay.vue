@@ -1,13 +1,13 @@
 <template>
     <div class="wrapper">
         <label>id      </label>
-        <label>{{ trans.id == null?null:trans.id}}   </label>
+        <label>{{ AccDto.id == null?null:AccDto.id}}   </label>
         <label>web</label>
-        <label>{{ trans.web }}</label>
-        <label>acc{{ (trans.acc  ) }}  </label>
-        <label>pin {{trans.pin }}</label>
-        <label>description{{ trans.description }} </label>
-        <label>   classify {{trans.classify}}</label>
+        <label>{{ AccDto.web }}</label>
+        <label>acc{{ (AccDto.acc  ) }}  </label>
+        <label>pin {{AccDto.pin }}</label>
+        <label>description{{ AccDto.description }} </label>
+        <label>   classify {{AccDto.classify}}</label>
         
         <!-- <button @click="emit('read', trans)">知道了</button>
         <button @click="emit('unread', trans)">设为未读</button> -->
