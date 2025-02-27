@@ -23,7 +23,7 @@ export default defineConfig({
     port: 3399, // 可以指定端口，如果需要
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:6665',
+        target: 'http://127.0.0.1:1233',
         changeOrigin: true
       }
     }

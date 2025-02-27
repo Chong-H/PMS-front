@@ -11,6 +11,6 @@ const API_BASE_URL = '/api';
 
 
 export const getAllAccAPI = async (): Promise<ResponseMessage<AccountDto[]>> => {
-    const response = await axios.get(`${API_BASE_URL}/collectibles`);
+    const response = await axios.get(`${API_BASE_URL}/accs`);
     return response.data;
 };

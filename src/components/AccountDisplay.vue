@@ -1,14 +1,14 @@
 <template>
     <div class="wrapper">
-        <label>id      </label>
-        <label>{{ AccDto.id == null?null:AccDto.id}}   </label>
-        <label>web</label>
-        <label>{{ AccDto.web }}</label>
-        <label>acc{{ (AccDto.acc  ) }}  </label>
-        <label>pin {{AccDto.pin }}</label>
-        <label>description{{ AccDto.description }} </label>
-        <label>   classify {{AccDto.classify}}</label>
-        
+        <h2>id     :  {{ AccDto.id == null?null:AccDto.id}} </h2>
+        <form> 
+        <label> </label>
+        <label>web     :  {{ AccDto.web  }}</label>
+        <label>acc     :    {{ encryptDecrypt(AccDto.acc+"") }}  </label>
+        <label>pin      :   {{encryptDecrypt(AccDto.pin+"") }}</label>
+        <label>description      :   {{ AccDto.description }} </label>
+        <label>   classify      :   {{AccDto.classify}}</label>
+        </form>
         <!-- <button @click="emit('read', trans)">知道了</button>
         <button @click="emit('unread', trans)">设为未读</button> -->
     </div>
@@ -31,6 +31,87 @@ const {
 //     (event: 'unread', trans: TransactionDto): void,
 
 // }>();
+// 定义加密序偶表（双向映射）
+const encryptionPairs: { [key: string]: string } = {
+    "0": "!",
+    "6": "@",
+    "1": "2",
+    "3": "9",
+    "4": "?",
+    "7": "#",
+    "5": "8",
+    "!": "0",
+    "@": "6",
+    "2": "1",
+    "9": "3",
+    "?": "4",
+    "#": "7",
+    "8": "5",
+    "%": "*",
+    "*": "%",
+    "-": "+",
+    "+": "-",
+    "q": "a",
+    "a": "q",
+    "w": "s",
+    "s": "w",
+    "e": "d",
+    "d": "e",
+    "r": "f",
+    "f": "r",
+    "t": "g",
+    "g": "t",
+    "y": "h",
+    "h": "y",
+    "u": "j",
+    "j": "u",
+    "i": "k",
+    "k": "i",
+    "o": "l",
+    "l": "o",
+    "p": "z",
+    "z": "p",
+    "x": "v",
+    "v": "x",
+    "c": "b",
+    "b": "c",
+    "n": "m",
+    "m": "n",
+    "Q": "Z",
+    "Z": "Q",
+    "W": "X",
+    "X": "W",
+    "E": "C",
+    "C": "E",
+    "R": "V",
+    "V": "R",
+    "T": "B",
+    "B": "T",
+    "Y": "N",
+    "N": "Y",
+    "U": "M",
+    "M": "U",
+    "I": "K",
+    "K": "I",
+    "O": "L",
+    "L": "O",
+    "P": "A",
+    "A": "P",
+    "S": "F",
+    "F": "S",
+    "D": "G",
+    "G": "D",
+    "H": "J",
+    "J": "H"
+};
+
+// 加密/解密函数
+function encryptDecrypt(str: string): string {
+    return str.split('').map(char => encryptionPairs[char] || char).join('');
+}
+
+
+
 
 </script>
 
@@ -50,5 +131,9 @@ const {
     /* 阴影 */
     margin-bottom: 20px;
     
+}
+label {
+    display: block; /* 将 label 设置为块级元素 */
+    margin-bottom: 5px; /* 添加一些间距 */
 }
 </style>
