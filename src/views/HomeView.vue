@@ -1,8 +1,10 @@
 <template>
   <div class="container">
-    <header class="welcome">
+    <div>
+    <header class="header">
       <h1>Welcome to PMS</h1>
     </header>
+    </div>
 
     <main class="warning-section">
       <div class="warning">
@@ -16,7 +18,7 @@
 <script setup lang="ts">
 import { ref, onMounted, type Ref } from 'vue';
 import { getAllAccAPI } from '@/api';
-
+import {useAccDtosStore} from "@/stores/accDtos"
 import { AccountDto } from '@/pojo/AccountDto';
 import AccountDisplay from '@/components/AccountDisplay.vue';
 
@@ -25,22 +27,19 @@ import { reactive } from 'vue';
 
 const init: Ref<boolean> = ref(true);
 const isEditing = ref(false);
-const AccDtos: Ref<AccountDto[]> = ref([] as AccountDto[]);
+ const AccDtos: Ref<AccountDto[]> = ref([] as AccountDto[]);
+
+ const accDtosStore = useAccDtosStore(); // 创建 Store 实例
 
 
 
 onMounted(async () => {
     if (1) {                                   
         try {
-            const response = await getAllAccAPI(); // 等待 Promise 解决
-          // 将 Iterable 转换为数组
+          const response = await getAllAccAPI(); // 等待 Promise 解决
+          
           AccDtos.value = Array.from(response.data);
-        //   .filter(
-        //         trans => ( 
-        //             (  trans.buyerId==store.userId&&trans.ifReadByBuyer==0 )||
-        //             (  trans.sellerId==store.userId&&trans.ifReadBySeller==0)
-        //          ) 
-        //  ).reverse();
+          accDtosStore.accDtos = Array.from(response.data);
 
           
         } catch (error) {
@@ -53,49 +52,56 @@ onMounted(async () => {
 </script>
 
 <style>
-  /* 基本样式 */
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #005c29; 
-    color: #fffbfb; /* 深灰色文字 */
-  }
+  
+ 
 
   .container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 20px;
+    
+    min-height: 100vh;
+  width: 100%;
   }
 
   header {
+    width: 100%;
     text-align: center;
     margin-bottom: 20px;
   }
 
   header h1 {
+    width: 100%;
     font-size: 2rem;
-    color: #333333; /* 深灰色标题 */
+    color: #00fd00; /* 深灰色标题 */
     margin: 0;
   }
 
   main {
-    width: 100%;
-    max-width: 600px;
-    background: #f9f9f9; /* 浅灰色背景 */
+
+    flex: 1;
+  display: flex;
+  justify-content: center;
+  /* 水平居中 */
+  align-items: center;
+  /* 垂直居中 */
+  position: relative;
+  width: 100%;
+    background: hsl(0, 0%, 15%); /* 浅灰色背景 */
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* 微弱阴影 */
   }
 
   .warning {
-    display: flex;
+    width: 100%;
+    /* display: flex; */
     flex-direction: column;
-    align-items: center;
+    text-align: center;
+    margin: 0;
   }
 
   .warning label {
+    width: 100%;
     font-size: 1.2rem;
     color: #ff0000; /* 红色警告标签 */
     font-weight: bold;
@@ -104,8 +110,9 @@ onMounted(async () => {
 
   .warning h2 {
     font-size: 1.5rem;
-    color: #333333; /* 深灰色警告内容 */
+    color: #f8552c; /* 深灰色警告内容 */
     text-align: center;
-    margin: 0;
+    margin: 0;width: 100%;
+
   }
 </style>

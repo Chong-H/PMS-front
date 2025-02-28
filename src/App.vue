@@ -23,8 +23,6 @@ import HelloWorld from './components/HelloWorld.vue'
   </div>
 </template>
 
-
-<!-- 组件局部样式 -->
 <style scoped>
 .app-container {
   display: flex;
@@ -52,6 +50,7 @@ import HelloWorld from './components/HelloWorld.vue'
 }
 
 .main-content {
+  
   flex: 1;
   display: flex;
   justify-content: center;

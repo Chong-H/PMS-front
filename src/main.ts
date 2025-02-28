@@ -8,8 +8,8 @@ import router from './router'
 
 
 const app = createApp(App)
-
+const pinia = createPinia();
 //app.use(createPinia())
 app.use(router)
-
+app.use(pinia); // 确保 Pinia 被正确挂载
 app.mount('#app')

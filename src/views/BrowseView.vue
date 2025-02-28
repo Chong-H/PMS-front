@@ -1,4 +1,5 @@
 <template>
+    <div class="container">
     <div> 
     <label>Password Manage System</label>
     </div>
@@ -7,20 +8,22 @@
     <label>WARNING:</label>
     <h2>Not for Official, Not for Money, No Responsible for Potential Risks</h2>
     </div>
-  
+    <h2>Accounts</h2>
     <main>
-      <h2>Accounts</h2>
+      
       <div class="cards-wrapper">
-              <AccountDisplay v-for="AccDto in AccDtos" :key="AccDto.id ?? undefined" :AccDto="AccDto"
+              <AccountDisplay v-for="AccDto in accDtosStore.accDtos" :key="AccDto.id ?? undefined" :AccDto="AccDto"
                    />
           </div>
       
     </main>
+    </div>
   </template>
   
   <script setup lang="ts">
   import { ref, onMounted, type Ref } from 'vue';
   import { getAllAccAPI } from '@/api';
+import {useAccDtosStore} from "@/stores/accDtos"
   
   import { AccountDto } from '@/pojo/AccountDto';
   import AccountDisplay from '@/components/AccountDisplay.vue';
@@ -31,7 +34,7 @@
   const init: Ref<boolean> = ref(true);
   const isEditing = ref(false);
   const AccDtos: Ref<AccountDto[]> = ref([] as AccountDto[]);
-  
+const accDtosStore = useAccDtosStore(); // 创建 Store 实例
   
   
   onMounted(async () => {
@@ -70,13 +73,22 @@
   </script>
   
   <style scoped>
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+  }
   .user-layout {
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
+      width: 100%;
   }
   
   @media (min-width: 768px) {
+    
       .user-layout {
           flex-direction: row;
           flex-wrap: wrap;
@@ -88,6 +100,7 @@
       .users-list,
       .edit-form {
           flex: 1 1 45%;
+          width: 100%;
       }
   }
   </style>
