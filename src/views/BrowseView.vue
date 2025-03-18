@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container"style="display: flex; gap: 20px;">
     <div> 
     <label>Password Manage System</label>
     </div>
@@ -38,23 +38,23 @@ const accDtosStore = useAccDtosStore(); // 创建 Store 实例
   
   
   onMounted(async () => {
-      if (1) {                                   
-          try {
-              const response = await getAllAccAPI(); // 等待 Promise 解决
-            // 将 Iterable 转换为数组
-            AccDtos.value = Array.from(response.data);
-          //   .filter(
-          //         trans => ( 
-          //             (  trans.buyerId==store.userId&&trans.ifReadByBuyer==0 )||
-          //             (  trans.sellerId==store.userId&&trans.ifReadBySeller==0)
-          //          ) 
-          //  ).reverse();
+      // if (1) {                                   
+      //     try {
+      //         const response = await getAllAccAPI(); // 等待 Promise 解决
+      //       // 将 Iterable 转换为数组
+      //       AccDtos.value = Array.from(response.data);
+      //     //   .filter(
+      //     //         trans => ( 
+      //     //             (  trans.buyerId==store.userId&&trans.ifReadByBuyer==0 )||
+      //     //             (  trans.sellerId==store.userId&&trans.ifReadBySeller==0)
+      //     //          ) 
+      //     //  ).reverse();
   
             
-          } catch (error) {
-              console.error('获取所有交易记录失败:', error);
-          }
-      }
+      //     } catch (error) {
+      //         console.error('获取所有交易记录失败:', error);
+      //     }
+      // }
       init.value = false;
   });
   

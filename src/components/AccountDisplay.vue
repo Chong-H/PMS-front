@@ -4,8 +4,8 @@
         <form> 
         <label> </label>
         <label>web     :  {{ AccDto.web  }}</label>
-        <label>acc     :    {{ encryptDecrypt(AccDto.acc+"") }}  </label>
-        <label>pin      :   {{encryptDecrypt(AccDto.pin+"") }}</label>
+        <label>acc     :    {{ store.VFcode=="0817"?encryptDecrypt(AccDto.acc+""):"please verify first" }}  </label>
+        <label>pin      :   {{store.VFcode=="0817"?encryptDecrypt(AccDto.pin+"") :"please verify first"}}</label>
         <label>description      :   {{ AccDto.description }} </label>
         <label>   classify      :   {{AccDto.classify}}</label>
         </form>
@@ -17,7 +17,7 @@
 <script setup lang="ts">
 
 import { AccountDto } from '@/pojo/AccountDto';
-
+import { store } from '@/stores/storeAuth';
 interface Props {
     AccDto: AccountDto,
 }

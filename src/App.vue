@@ -15,6 +15,8 @@ import HelloWorld from './components/HelloWorld.vue'
         <RouterLink to="/Queryview">Query</RouterLink>
 
         <RouterLink to="/Browse">Browse</RouterLink>
+
+        <RouterLink to="/Log">Login</RouterLink>
       </nav>
     </header>
     <main class="main-content">

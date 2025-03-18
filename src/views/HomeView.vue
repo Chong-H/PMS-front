@@ -1,16 +1,21 @@
 <template>
-  <div class="container">
+  <div class="container"style="display: flex; gap: 20px;">
     <div>
     <header class="header">
       <h1>Welcome to PMS</h1>
+      <button type="button" @click="getAccDtos" class="query-button">Obtain</button>
     </header>
     </div>
 
+    <div>
+      
+    </div>
     <main class="warning-section">
       <div class="warning">
         <label>WARNING:</label>
         <h2>Not for Official, Not for Money, No Responsible for Potential Risks</h2>
       </div>
+      
     </main>
   </div>
 </template>
@@ -21,7 +26,7 @@ import { getAllAccAPI } from '@/api';
 import {useAccDtosStore} from "@/stores/accDtos"
 import { AccountDto } from '@/pojo/AccountDto';
 import AccountDisplay from '@/components/AccountDisplay.vue';
-
+import {store} from '@/stores/storeAuth'
 import { reactive } from 'vue';
 
 
@@ -32,20 +37,39 @@ const isEditing = ref(false);
  const accDtosStore = useAccDtosStore(); // 创建 Store 实例
 
 
-
-onMounted(async () => {
-    if (1) {                                   
-        try {
+ async function getAccDtos() {
+    try {
+      if(store.VFcode=="0817"){
           const response = await getAllAccAPI(); // 等待 Promise 解决
           
           AccDtos.value = Array.from(response.data);
           accDtosStore.accDtos = Array.from(response.data);
-
+          alert("obtain succees");
+      }else{
+          alert("please verify first");
+      }
           
         } catch (error) {
             console.error('获取所有交易记录失败:', error);
-        }
-    }
+     }
+     
+  
+
+  
+}
+onMounted(async () => {
+    // if (1) {                                   
+    //     try {
+    //       const response = await getAllAccAPI(); // 等待 Promise 解决
+          
+    //       AccDtos.value = Array.from(response.data);
+    //       accDtosStore.accDtos = Array.from(response.data);
+
+          
+    //     } catch (error) {
+    //         console.error('获取所有交易记录失败:', error);
+    //     }
+    // }
     init.value = false;
 });
 
@@ -115,4 +139,15 @@ onMounted(async () => {
     margin: 0;width: 100%;
 
   }
+  .query-button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    color: #666;
+    border: 1px solid #ddd;
+}
 </style>

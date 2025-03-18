@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container"style="display: flex; gap: 20px;">
     <div>
         <center><h2>PMS Query Page:</h2></center>
     <h2>INPUT Acc Web</h2>
@@ -34,23 +34,23 @@ const isEditing = ref(false);
 const AccDtos: Ref<AccountDto[]> = ref([] as AccountDto[]);
     const accDtosStore = useAccDtosStore(); // 创建 Store 实例
 onMounted(async () => {
-    if (1) {                                   
-        try {
-            const response = await getAllAccAPI(); // 等待 Promise 解决
-          AccDtos.value = Array.from(response.data);
-        } catch (error) {
-            console.error('获取所有交易记录失败:', error);
-        }
-    }
+    // if (1) {                                   
+    //     try {
+    //         const response = await getAllAccAPI(); // 等待 Promise 解决
+    //       AccDtos.value = Array.from(response.data);
+    //     } catch (error) {
+    //         console.error('获取所有交易记录失败:', error);
+    //     }
+    // }
     init.value = false;
 });
 
 async function filterAccDtos() {
     try {
-          const response = await getAllAccAPI(); // 等待 Promise 解决
+          //const response = await getAllAccAPI(); // 等待 Promise 解决
           
-          AccDtos.value = Array.from(response.data);
-          accDtosStore.accDtos = Array.from(response.data);
+          //AccDtos.value = Array.from(response.data);
+          //accDtosStore.accDtos = Array.from(response.data);
 
           
         } catch (error) {
