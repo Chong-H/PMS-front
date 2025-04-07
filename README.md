@@ -1,4 +1,16 @@
 # PMS-front
+## About this  project
+this is the front-end of my PMS system;
+
+### Safty
+the communication between front and end is encrypted with aes
+the communication between database and back-end is encrypt with a simple function i written
+
+### When issue the back-end code
+after i finish the encrypt of communication between back-end and database with a more safe algorithm
+
+
+## The following is about vue3
 
 This template should help get you started developing with Vue 3 in Vite.
 
