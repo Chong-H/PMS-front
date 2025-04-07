@@ -4,8 +4,33 @@
         <form> 
         <label> </label>
         <label>web     :  {{ AccDto.web  }}</label>
-        <label>acc     :    {{ store.VFcode=="0817"?encryptDecrypt(AccDto.acc+""):"please verify first" }}  </label>
-        <label>pin      :   {{store.VFcode=="0817"?encryptDecrypt(AccDto.pin+"") :"please verify first"}}</label>
+        <!-- <label>acc     :    {{ store.VFcode!=""?encryptDecrypt(( decrypt (AccDto.acc==null?"1 ":AccDto.acc,"SKeySKeySKeySKey" )+"","")):"please verify first" }}  </label>
+          -->
+          <label>acc     :    {{ store.VFcode!=""?
+                                                    encryptDecrypt(  ( 
+                                                                        decrypt (
+                                                                            AccDto.acc==null?
+                                                                                            "1 ":
+                                                                                            AccDto.acc,"SKeySKeySKeySKey"  
+                                                                                )+""
+                                                                        )
+                                                                    )
+                                                    :
+                                                  "please verify first" }}  </label>
+
+        <label>pin      :   {{ store.VFcode!=""?
+                                                    encryptDecrypt(  ( 
+                                                                        decrypt (
+                                                                            AccDto.pin==null?
+                                                                                            "1 ":
+                                                                                            AccDto.pin,"SKeySKeySKeySKey"  
+                                                                                )+""
+                                                                        )
+                                                                    )
+                                                    :
+                                                  "please verify first" }}
+
+        </label>
         <label>description      :   {{ AccDto.description }} </label>
         <label>   classify      :   {{AccDto.classify}}</label>
         </form>
@@ -18,6 +43,7 @@
 
 import { AccountDto } from '@/pojo/AccountDto';
 import { store } from '@/stores/storeAuth';
+import { decrypt } from '@/stores/decode';
 interface Props {
     AccDto: AccountDto,
 }

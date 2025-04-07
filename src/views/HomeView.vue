@@ -39,8 +39,8 @@ const isEditing = ref(false);
 
  async function getAccDtos() {
     try {
-      if(store.VFcode=="0817"){
-          const response = await getAllAccAPI(); // 等待 Promise 解决
+      if(store.VFcode!=null){
+          const response = await getAllAccAPI(store.VFcode); // 等待 Promise 解决
           
           AccDtos.value = Array.from(response.data);
           accDtosStore.accDtos = Array.from(response.data);
@@ -50,7 +50,7 @@ const isEditing = ref(false);
       }
           
         } catch (error) {
-            console.error('获取所有交易记录失败:', error);
+            console.error('获取所有账号失败:', error);
      }
      
   

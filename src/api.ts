@@ -10,7 +10,9 @@ const API_BASE_URL = '/api';
 
 
 
-export const getAllAccAPI = async (): Promise<ResponseMessage<AccountDto[]>> => {
-    const response = await axios.get(`${API_BASE_URL}/accs`);
+export const getAllAccAPI = async (vfnum : String): Promise<ResponseMessage<AccountDto[]>> => {
+    const response = await axios.get(`${API_BASE_URL}/accs`, {
+        params: { vfnum } // axios会自动将参数拼接到URL中
+    });
     return response.data;
 };
