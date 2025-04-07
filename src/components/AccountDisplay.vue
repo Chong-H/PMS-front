@@ -11,7 +11,7 @@
                                                                         decrypt (
                                                                             AccDto.acc==null?
                                                                                             "1 ":
-                                                                                            AccDto.acc,"SKeySKeySKeySKey"  
+                                                                                            AccDto.acc,store.DECScode 
                                                                                 )+""
                                                                         )
                                                                     )
@@ -23,7 +23,7 @@
                                                                         decrypt (
                                                                             AccDto.pin==null?
                                                                                             "1 ":
-                                                                                            AccDto.pin,"SKeySKeySKeySKey"  
+                                                                                            AccDto.pin,store.DECScode 
                                                                                 )+""
                                                                         )
                                                                     )

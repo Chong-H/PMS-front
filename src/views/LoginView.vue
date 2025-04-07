@@ -7,7 +7,7 @@
       </div>
       <h2>Input  Verification Code</h2>
       <input v-model="inputValue" placeholder="Input " class="input-field"  />
-      <h2>Input  Decode Signal</h2>
+      <h2>Input  Encrypt Algorithm</h2>
       <input v-model="DecodeSignal" placeholder="Input " class="input-field" />
       <h2> </h2>
       <label>    </label>
@@ -56,6 +56,7 @@
   });
   async function handleVerify() {
     store.VFcode=(inputValue.value);
+    store.DECScode=(DecodeSignal.value=="aes"?"SKeySKeySKeySKey":"SKeiSKeiSKeiSKei");
 //     try {
 //           const response = await getAllAccAPI(); // 等待 Promise 解决
           

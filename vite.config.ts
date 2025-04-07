@@ -19,6 +19,7 @@ export default defineConfig({
     },
   },
   server: {
+    
     host: '0.0.0.0', // 允许局域网访问
     port: 3399, // 可以指定端口，如果需要
     proxy: {
