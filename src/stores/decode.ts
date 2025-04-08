@@ -31,10 +31,17 @@ export function decrypt(encryptedData: string, secretKey: string): string | null
             }
         );
 
-        // 将解密后的数据转换为字符串
-        const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
+        let plaintext: string;
+        try {
+            plaintext = decrypted.toString(CryptoJS.enc.Utf8);
+        } catch (e) {
+            console.error('Failed to convert decrypted data to UTF-8 string:', e);
+            plaintext = decrypted.toString(CryptoJS.enc.Latin1); // 尝试使用 Latin1 编码
+        }
 
-        return decryptedText;
+        return plaintext;
+
+        //return plaintext;
     } catch (e) {
         console.error('Error in decryption:', e);
         return null;
