@@ -7,26 +7,26 @@
         <!-- <label>acc     :    {{ store.VFcode!=""?encryptDecrypt(( decrypt (AccDto.acc==null?"1 ":AccDto.acc,"SKeySKeySKeySKey" )+"","")):"please verify first" }}  </label>
           -->
           <label>acc     :    {{ store.VFcode!=""?
-                                                    encryptDecrypt(  ( 
+                                                      ( 
                                                                         decrypt (
                                                                             AccDto.acc==null?
                                                                                             "1 ":
                                                                                             AccDto.acc,store.DECScode 
                                                                                 )+""
                                                                         )
-                                                                    )
+                                                                    
                                                     :
                                                   "please verify first" }}  </label>
 
         <label>pin      :   {{ store.VFcode!=""?
-                                                    encryptDecrypt(  ( 
+                                                     ( 
                                                                         decrypt (
                                                                             AccDto.pin==null?
                                                                                             "1 ":
                                                                                             AccDto.pin,store.DECScode 
                                                                                 )+""
                                                                         )
-                                                                    )
+                                                                    
                                                     :
                                                   "please verify first" }}
 
