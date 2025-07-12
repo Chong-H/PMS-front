@@ -118,7 +118,7 @@
     /* 垂直居中 */
     position: relative;
     width: 100%;
-      background: hsl(0, 0%, 15%); /* 浅灰色背景 */
+      background: hsl(60, 100%, 93%); /* 浅灰色背景 */
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* 微弱阴影 */

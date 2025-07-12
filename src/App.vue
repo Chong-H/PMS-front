@@ -1,10 +1,30 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+
+const windowWidth = ref(window.innerWidth)
+const windowHeight = ref(window.innerHeight)
+
+const handleResize = () => {
+  windowWidth.value = window.innerWidth
+  windowHeight.value = window.innerHeight
+}
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
 </script>
 
 
 <template>
+  <el-container
+    class="layout-container-demo"
+    :style="{ height: windowHeight * 0.9 + 'px', width: windowWidth * 0.9 + 'px' }"
+  >
   <div class="app-container">
     <header class="nav-header">
       <!-- 这里是刘海导航栏 -->
@@ -23,9 +43,19 @@ import HelloWorld from './components/HelloWorld.vue'
       <RouterView />
     </main>
   </div>
+  </el-container>
 </template>
 
 <style scoped>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* 核心：宽度包含padding和border */
+}
+.app-container, .container {
+  max-width: 1440px; /* 根据设计需求调整 */
+  margin: 0 auto; /* 水平居中 */
+}
 .app-container {
   display: flex;
   flex-direction: column;
@@ -35,8 +65,7 @@ import HelloWorld from './components/HelloWorld.vue'
 }
 
 .nav-header {
-  width: 100%;
-  background: linear-gradient(to bottom, darkslategrey, darkslategrey);
+  background: linear-gradient(to bottom, rgb(232, 255, 255), rgb(147, 255, 255));
   border-radius: 0 0 20px 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 15px 0;
@@ -44,7 +73,6 @@ import HelloWorld from './components/HelloWorld.vue'
 }
 
 .nav-content {
-  width: 100%;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -60,6 +88,5 @@ import HelloWorld from './components/HelloWorld.vue'
   align-items: center;
   /* 垂直居中 */
   position: relative;
-  width: 100%;
 }
 </style>

@@ -3,8 +3,8 @@
     <div>
     <header class="header">
       <h1>Welcome to PMS</h1>
-      <button type="button" @click="handleagree" class="query-button">协商</button>
-      <button type="button" @click="getAccDtos" class="query-button">Obtain</button>
+      <el-button type="success" plain @click="handleagree" class="query-button">协商</el-button>
+      <el-button type="button" plain @click="getAccDtos" class="query-button">Obtain</el-button>
     </header>
     </div>
 
@@ -58,6 +58,20 @@ const isEditing = ref(false);
 // 密钥协商处理函数
 async function handleagree() {
   try {
+    // 检查是否在安全上下文中
+  const isSecureContext = window.isSecureContext;
+  console.log('是否在安全上下文中:', isSecureContext);
+
+  // 检查 Web Crypto API 支持情况
+  const hasCrypto = !!window.crypto;
+  const hasSubtleCrypto = hasCrypto && !!window.crypto.subtle;
+  console.log('window.crypto:', hasCrypto);
+  console.log('window.crypto.subtle:', hasSubtleCrypto);
+    // 检查 Web Crypto API 是否可用
+  if (!window.crypto || !window.crypto.subtle) {
+    console.error('Web Crypto API 不可用');
+    throw new Error('当前环境不支持加密操作');
+  }
     // 1. 确保Alice的密钥对存在
     if (!store.pkeyalice || !store.skeyalice) {
       const keyPair = await window.crypto.subtle.generateKey(
@@ -186,7 +200,7 @@ onMounted(async () => {
     flex-direction: column;
     
     min-height: 100vh;
-  width: 100%;
+    width: 100%;
   }
 
   header {
@@ -198,7 +212,7 @@ onMounted(async () => {
   header h1 {
     width: 100%;
     font-size: 2rem;
-    color: #00fd00; /* 深灰色标题 */
+    color: #00fd00; 
     margin: 0;
   }
 
@@ -212,7 +226,7 @@ onMounted(async () => {
   /* 垂直居中 */
   position: relative;
   width: 100%;
-    background: hsl(0, 0%, 15%); /* 浅灰色背景 */
+    background: hsl(0, 0%, 100%); /* 背景 */
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* 微弱阴影 */
