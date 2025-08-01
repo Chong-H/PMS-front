@@ -3,8 +3,8 @@
 this is the front-end of my PMS system;
 
 ### Safty
-the communication between front and end is encrypted with aes
-the communication between database and back-end is encrypt with a simple function i written
+the communication between front and end is encrypted with AES，the key is generate in random and passed  by ECDH
+the communication between database and back-end is encrypt with a AES, the key is stored in DataBase
 
 ### When issue the back-end code
 after i finish the encrypt of communication between back-end and database with a more safe algorithm
