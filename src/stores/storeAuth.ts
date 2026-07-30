@@ -5,12 +5,25 @@ interface StoreState {
   VFcode: string;
   DECScode: string;
   communicationcode: string;
-  pkeyalice: string | null;    // 显式允许字符串或null
-  skeyalice: CryptoKey | null; // 私钥为CryptoKey对象
-  pkeybob: string | null;      // 公钥为Base64字符串
-  aeskey: string | null;       // AES密钥为Base64字符串
+  pkeyalice: string | null;
+  skeyalice: CryptoKey | null;
+  pkeybob: string | null;
+  aeskey: string | null;       // 当前选中的 AES key
+  aesKeyList: string;          // AES 密钥列表 JSON
+  backendAuthKey: string;      // 后端鉴权 token
 }
-// 使用类型定义创建响应式对象
+
+function initAesKey(): string | null {
+  try {
+    const idx = localStorage.getItem('PMS_AESKEY_SELECTED');
+    if (idx === null) return null;
+    const keys = JSON.parse(localStorage.getItem('PMS_AESKEY_LIST') || '[]');
+    return keys[parseInt(idx, 10)] || null;
+  } catch {
+    return null;
+  }
+}
+
 export const store = reactive<StoreState>({
   VFcode: "-1",
   DECScode: "9",
@@ -18,5 +31,7 @@ export const store = reactive<StoreState>({
   pkeyalice: null,
   skeyalice: null,
   pkeybob: null,
-  aeskey: null,
+  aeskey: initAesKey(),
+  aesKeyList: localStorage.getItem('PMS_AESKEY_LIST') || '',
+  backendAuthKey: localStorage.getItem('PMS_BACKEND_AUTH_KEY') || '',
 });

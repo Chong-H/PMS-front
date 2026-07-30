@@ -1,0 +1,67 @@
+<template>
+  <div class="account-card">
+    <div class="account-header">
+      <div>
+        <p class="eyebrow">Account</p>
+        <h3>{{ AccDto.web || 'Unnamed account' }}</h3>
+      </div>
+      <span class="meta-badge">{{ AccDto.classify || 'General' }}</span>
+    </div>
+
+    <p><strong>ID:</strong> {{ AccDto.id ?? '—' }}</p>
+    <p><strong>Account:</strong> {{ resolveValue(AccDto.acc) }}</p>
+    <p><strong>Pin:</strong> {{ resolveValue(AccDto.pin) }}</p>
+    <p><strong>Description:</strong> {{ AccDto.description || 'No description provided.' }}</p>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { AccountDto } from '@/pojo/AccountDto';
+import { store } from '@/stores/storeAuth';
+import { decrypt } from '@/stores/decode';
+
+interface Props {
+  AccDto: AccountDto;
+}
+
+const { AccDto } = defineProps<Props>();
+
+function resolveValue(value: string | null | undefined) {
+  if (store.VFcode !== '') {
+    return decrypt(value ?? '1 ', store.aeskey ?? '') + '';
+  }
+  return 'please verify first';
+}
+</script>
+
+<style scoped>
+.account-card {
+  padding: 16px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+}
+
+.account-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.meta-badge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+p {
+  margin: 6px 0;
+  color: #475569;
+}
+</style>

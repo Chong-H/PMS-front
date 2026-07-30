@@ -1,15 +1,19 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div class="page-shell">
+    <n-card class="card-panel about-card" bordered>
+      <p class="eyebrow">About</p>
+      <h2 class="page-title">About PMS</h2>
+      <p class="page-subtitle">A modern workspace for viewing and organizing account information in a safer, cleaner interface.</p>
+    </n-card>
   </div>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
+<script setup lang="ts">
+import { NCard } from 'naive-ui';
+</script>
+
+<style scoped>
+.about-card {
+  padding: 24px;
 }
 </style>

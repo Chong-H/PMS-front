@@ -1,165 +1,128 @@
 <template>
-    <div class="wrapper">
-        <h2>id     :  {{ AccDto.id == null?null:AccDto.id}} </h2>
-        <form> 
-        <label> </label>
-        <label>web     :  {{ AccDto.web  }}</label>
-        <!-- <label>acc     :    {{ store.VFcode!=""?encryptDecrypt(( decrypt (AccDto.acc==null?"1 ":AccDto.acc,"SKeySKeySKeySKey" )+"","")):"please verify first" }}  </label>
-          -->
-          <label>acc     :    {{ store.VFcode!=""?
-                                                      ( 
-                                                                        decrypt (
-                                                                            AccDto.acc==null?
-                                                                                            "1 ":
-                                                                                            AccDto.acc,store.aeskey==null?"":store.aeskey 
-                                                                                )+""
-                                                                        )
-                                                                    
-                                                    :
-                                                  "please verify first" }}  </label>
-
-        <label>pin      :   {{ store.VFcode!=""?
-                                                     ( 
-                                                                        decrypt (
-                                                                            AccDto.pin==null?
-                                                                                            "1 ":
-                                                                                            AccDto.pin,store.aeskey==null?"":store.aeskey 
-                                                                                )+""
-                                                                        )
-                                                                    
-                                                    :
-                                                  "please verify first" }}
-
-        </label>
-        <label>description      :   {{ AccDto.description }} </label>
-        <label>   classify      :   {{AccDto.classify}}</label>
-        </form>
-        <!-- <button @click="emit('read', trans)">知道了</button>
-        <button @click="emit('unread', trans)">设为未读</button> -->
+  <div class="account-card">
+    <div class="account-header">
+      <div>
+        <p class="eyebrow">Account</p>
+        <h3>{{ AccDto.web || 'Unnamed account' }}</h3>
+      </div>
+      <span class="meta-badge">{{ AccDto.classify || 'General' }}</span>
     </div>
+
+    <p><strong>ID:</strong> {{ AccDto.id ?? '—' }}</p>
+    <p><strong>Account:</strong> {{ revealed ? resolveValue(AccDto.acc) : '******' }}</p>
+    <p><strong>Pin:</strong> {{ revealed ? resolveValue(AccDto.pin) : '******' }}</p>
+    <p><strong>Description:</strong> {{ AccDto.description || 'No description provided.' }}</p>
+
+    <div class="actions">
+      <n-button size="small" @click="toggleReveal">{{ revealed ? '隐藏' : '查看' }}</n-button>
+      <n-button size="small" @click="handleEdit">Edit</n-button>
+      <n-button size="small" type="error" @click="handleDelete">Delete</n-button>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-
-import { AccountDto } from '@/pojo/AccountDto';
+import { ref } from 'vue';
+import { NButton } from 'naive-ui';
+import type { AccountDto } from '@/pojo/AccountDto';
 import { store } from '@/stores/storeAuth';
-import { decrypt } from '@/stores/decode';
+import { decrypt, generateKey } from '@/stores/decode';
+import { deleteAccountAPI, updateAccountAPI } from '@/api';
+
 interface Props {
-    AccDto: AccountDto,
+  AccDto: AccountDto;
 }
 
-const {
-    AccDto,
-} = defineProps<Props>();
+const props = defineProps<Props>();
+const emit = defineEmits<{ (e: 'deleted', id: number): void; (e: 'updated'): void }>();
 
-// const emit = defineEmits<{
-//     (event: 'read', trans: TransactionDto): void,
-//     (event: 'unread', trans: TransactionDto): void,
+const revealed = ref(false);
 
-// }>();
-// 定义加密序偶表（双向映射）
-const encryptionPairs: { [key: string]: string } = {
-    "0": "!",
-    "6": "@",
-    "1": "2",
-    "3": "9",
-    "4": "?",
-    "7": "#",
-    "5": "8",
-    "!": "0",
-    "@": "6",
-    "2": "1",
-    "9": "3",
-    "?": "4",
-    "#": "7",
-    "8": "5",
-    "%": "*",
-    "*": "%",
-    "-": "+",
-    "+": "-",
-    "q": "a",
-    "a": "q",
-    "w": "s",
-    "s": "w",
-    "e": "d",
-    "d": "e",
-    "r": "f",
-    "f": "r",
-    "t": "g",
-    "g": "t",
-    "y": "h",
-    "h": "y",
-    "u": "j",
-    "j": "u",
-    "i": "k",
-    "k": "i",
-    "o": "l",
-    "l": "o",
-    "p": "z",
-    "z": "p",
-    "x": "v",
-    "v": "x",
-    "c": "b",
-    "b": "c",
-    "n": "m",
-    "m": "n",
-    "Q": "Z",
-    "Z": "Q",
-    "W": "X",
-    "X": "W",
-    "E": "C",
-    "C": "E",
-    "R": "V",
-    "V": "R",
-    "T": "B",
-    "B": "T",
-    "Y": "N",
-    "N": "Y",
-    "U": "M",
-    "M": "U",
-    "I": "K",
-    "K": "I",
-    "O": "L",
-    "L": "O",
-    "P": "A",
-    "A": "P",
-    "S": "F",
-    "F": "S",
-    "D": "G",
-    "G": "D",
-    "H": "J",
-    "J": "H"
-};
-
-// 加密/解密函数
-function encryptDecrypt(str: string): string {
-    return str.split('').map(char => encryptionPairs[char] || char).join('');
+function toggleReveal() {
+  revealed.value = !revealed.value;
 }
 
+function resolveValue(value: string | null | undefined) {
+  if (!store.aeskey) return 'no key';
+  try {
+    const derivedKey = generateKey(props.AccDto.classify, store.aeskey);
+    return decrypt(value ?? '', derivedKey) ?? '';
+  } catch {
+    return '[decrypt error]';
+  }
+}
 
+async function handleDelete() {
+  if (!props.AccDto.id) return;
+  try {
+    await deleteAccountAPI(props.AccDto.id);
+    emit('deleted', props.AccDto.id);
+  } catch (error) {
+    console.error('删除失败:', error);
+    alert(`Delete failed: ${(error as Error).message}`);
+  }
+}
 
+async function handleEdit() {
+  if (!props.AccDto.id) return;
 
+  const web = window.prompt('Edit web', props.AccDto.web ?? '') ?? props.AccDto.web ?? '';
+  const acc = window.prompt('Edit account', props.AccDto.acc ?? '') ?? props.AccDto.acc ?? '';
+  const pin = window.prompt('Edit pin', props.AccDto.pin ?? '') ?? props.AccDto.pin ?? '';
+  const description = window.prompt('Edit description', props.AccDto.description ?? '') ?? props.AccDto.description ?? '';
+  const classify = window.prompt('Edit classify', props.AccDto.classify ?? '') ?? props.AccDto.classify ?? '';
+
+  try {
+    await updateAccountAPI({
+      id: props.AccDto.id,
+      web,
+      acc,
+      pin,
+      description,
+      classify,
+    });
+    emit('updated');
+  } catch (error) {
+    console.error('更新失败:', error);
+    alert(`Update failed: ${(error as Error).message}`);
+  }
+}
 </script>
 
-
 <style scoped>
-/* label竖置 */
-.wrapper {
-    border: 1px solid #ddd;
-    /* 边框 */
-    border-radius: 8px;
-    /* 圆角 */
-    padding: 16px;
-    /* 内边距 */
-    background-color: black;
-    /* 背景颜色 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    /* 阴影 */
-    margin-bottom: 20px;
-    
+.account-card {
+  padding: 16px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
 }
-label {
-    display: block; /* 将 label 设置为块级元素 */
-    margin-bottom: 5px; /* 添加一些间距 */
+
+.account-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.meta-badge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+p {
+  margin: 6px 0;
+  color: #475569;
 }
 </style>

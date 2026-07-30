@@ -1,144 +1,81 @@
 <template>
-    <div class="container"style="display: flex; gap: 20px;">
-    <div>
-        <center><h2>PMS Query Page:</h2></center>
-    <h2>INPUT Acc Web</h2>
-    </div>
-    <label>INPUT Acc Web</label>
-    <input v-model="inputValue" placeholder="Input Web/App" class="input-field"  />
-    <button type="button" @click="filterAccDtos" class="query-button">Query</button>
-    <h2>Accounts</h2>
-    <main>
-      
-      <div class="cards-wrapper">
-              <AccountDisplay v-for="AccDto in accDtosStore.accFiltered" :key="AccDto.id ?? undefined" :AccDto="AccDto"
-                   />
-          </div>
-    </main>
-    </div>
-  </template>
+  <div class="page-shell">
+    <n-card class="card-panel query-card" bordered>
+      <div class="query-header">
+        <div>
+          <p class="eyebrow">Query</p>
+          <h2 class="page-title">PMS Query Page</h2>
+          <p class="page-subtitle">Search accounts by website or app name.</p>
+        </div>
+      </div>
+
+      <n-space vertical size="large">
+        <div class="field-block">
+          <label>Input account web</label>
+          <n-input v-model:value="inputValue" placeholder="Input Web/App" />
+        </div>
+
+        <n-button type="primary" @click="filterAccDtos">Query</n-button>
+      </n-space>
+
+      <div class="result-list">
+        <div v-if="accDtosStore.accFiltered.length" class="results-grid">
+          <AccountDisplay v-for="AccDto in accDtosStore.accFiltered" :key="AccDto.id ?? undefined" :AccDto="AccDto" />
+        </div>
+        <div v-else class="empty-state">No results yet. Try a search term.</div>
+      </div>
+    </n-card>
+  </div>
+</template>
 
 <script setup lang="ts">
-import { ref, onMounted, type Ref } from 'vue';
-import { getAllAccAPI } from '@/api';
-import {useAccDtosStore} from "@/stores/accDtos"
-import axios from 'axios';
-import { AccountDto } from '@/pojo/AccountDto';
+import { ref } from 'vue';
+import { NButton, NCard, NInput, NSpace } from 'naive-ui';
+import { useAccDtosStore } from '@/stores/accDtos';
 import AccountDisplay from '@/components/AccountDisplay.vue';
 
-import { reactive } from 'vue';
+const inputValue = ref('');
+const accDtosStore = useAccDtosStore();
 
-const inputValue = ref(''); // 绑定输入框的值
-const init: Ref<boolean> = ref(true);
-const isEditing = ref(false);
-const AccDtos: Ref<AccountDto[]> = ref([] as AccountDto[]);
-    const accDtosStore = useAccDtosStore(); // 创建 Store 实例
-onMounted(async () => {
-    // if (1) {                                   
-    //     try {
-    //         const response = await getAllAccAPI(); // 等待 Promise 解决
-    //       AccDtos.value = Array.from(response.data);
-    //     } catch (error) {
-    //         console.error('获取所有交易记录失败:', error);
-    //     }
-    // }
-    init.value = false;
-});
+// 进入页面时清空过滤结果，用户点击 Query 按钮才搜索
+accDtosStore.accFiltered = [];
 
-async function filterAccDtos() {
-    try {
-          //const response = await getAllAccAPI(); // 等待 Promise 解决
-          
-          //AccDtos.value = Array.from(response.data);
-          //accDtosStore.accDtos = Array.from(response.data);
-
-          
-        } catch (error) {
-            console.error('获取所有交易记录失败:', error);
-     }
-     
+function filterAccDtos() {
   if (!inputValue.value) {
-    // 如果输入框为空，清空过滤结果
-    accDtosStore.accFiltered = [];
+    accDtosStore.accFiltered = accDtosStore.accDtos;
     return;
   }
 
-  // 根据输入框的值过滤 accDtos 数据
   accDtosStore.accFiltered = accDtosStore.accDtos.filter((accDto) =>
-    accDto.web!=null&&accDto.web.includes(inputValue.value)
+    accDto.web != null && accDto.web.includes(inputValue.value)
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 </script>
 
 <style scoped>
-.user-layout {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    width: 100%;
+.query-card {
+  padding: 24px;
 }
 
-@media (min-width: 768px) {
-    .user-layout {
-        flex-direction: row;
-        flex-wrap: wrap;
-        width: 100%;
-    }
+.query-header {
+  margin-bottom: 18px;
+}
 
-    .user-form,
-    .query-form,
-    .collectibles-list,
-    .users-list,
-    .edit-form {
-        flex: 1 1 45%;
-        width: 100%;
-    }
+.result-list {
+  margin-top: 20px;
 }
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    width: 100%;
-  }
 
-.input-field {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 25px;
-    /* 圆角输入框 */
-    font-size: 16px;
-    transition: border-color 0.3s;
-    /* 过渡效果 */
+.results-grid {
+  display: grid;
+  gap: 14px;
 }
-.button {
-    background: #f8f9fa;
-    color: #666;
-    border: 1px solid #ddd;
-}
-.query-button {
-    padding: 12px 20px;
-    border: none;
-    border-radius: 25px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: #f8f9fa;
-    color: #666;
-    border: 1px solid #ddd;
+
+.empty-state {
+  padding: 18px;
+  border-radius: 14px;
+  background: #f8fafc;
+  color: #64748b;
+  text-align: center;
 }
 </style>
