@@ -8,7 +8,9 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/",
+  // base: "/", 
+  //for apk
+  base: "./",
   plugins: [
     vue(),
     vueJsx(),
@@ -22,7 +24,7 @@ export default defineConfig({
   },
   server: {
     
-    host: '0.0.0.0', // 允许局域网访问
+    host: process.env.TAURI_DEV_HOST || "0.0.0.0",
     port: 3399, // 可以指定端口，如果需要
     proxy: {
       '/api': {

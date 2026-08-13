@@ -90,3 +90,20 @@ export function generateKey(classify: string | null | undefined, baseKey: string
   return String.fromCharCode(...keyBytes);
 }
 
+/**
+ * AES加密（与 decrypt 对称，AES-CBC + Pkcs7 + 固定 IV）
+ * @param plaintext 明文
+ * @param secretKey 密钥（与解密时传入的 secretKey 一致）
+ * @returns Base64 编码的密文
+ */
+export function encrypt(plaintext: string, secretKey: string): string {
+  const key = CryptoJS.enc.Utf8.parse(secretKey);
+  const ivWordArray = CryptoJS.enc.Utf8.parse("1234567890123456");
+  const encrypted = CryptoJS.AES.encrypt(plaintext, key, {
+    iv: ivWordArray,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+  });
+  return encrypted.toString();
+}
+

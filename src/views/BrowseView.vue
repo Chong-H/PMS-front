@@ -1,67 +1,68 @@
 <template>
   <div class="page-shell">
     <n-card class="card-panel browse-card" bordered>
-      
-
 
       <div class="toolbar">
-        <n-button type="primary" @click="loadAccounts">Refresh</n-button>
-      </div>
+          <n-button type="primary" @click="loadAccounts">Refresh</n-button>
+        </div>
 
+        <!-- 分类标签（无 All 选项） -->
+        <div class="category-bar" v-if="categories.length">
+          <n-tag
+            v-for="cat in categories"
+            :key="cat"
+            size="large"
+            :type="selectedClassify === cat ? 'primary' : 'default'"
+            style="cursor:pointer"
+            @click="toggleCategory(cat)"
+          >
+            {{ cat }}
+          </n-tag>
+        </div>
 
-      <!-- 分类标签（无 All 选项） -->
-      <div class="category-bar" v-if="categories.length">
-        <n-tag
-          v-for="cat in categories"
-          :key="cat"
-          size="large"
-          :type="selectedClassify === cat ? 'primary' : 'default'"
-          style="cursor:pointer"
-          @click="toggleCategory(cat)"
-        >
-          {{ cat }}
-        </n-tag>
-      </div>
+        <!-- 分页导航 -->
+        <div class="pagination-bar">
+          <n-button
+            size="small"
+            :disabled="currentPage <= 1"
+            @click="goToPage(currentPage - 1)"
+          >
+            ◀ Prev
+          </n-button>
+          <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
+          <n-button
+            size="small"
+            :disabled="currentPage >= totalPages"
+            @click="goToPage(currentPage + 1)"
+          >
+            Next ▶
+          </n-button>
+        </div>
 
-      <!-- 分页导航 -->
-      <div class="pagination-bar">
-        <n-button
-          size="small"
-          :disabled="currentPage <= 1"
-          @click="goToPage(currentPage - 1)"
-        >
-          ◀ Prev
-        </n-button>
-        <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
-        <n-button
-          size="small"
-          :disabled="currentPage >= totalPages"
-          @click="goToPage(currentPage + 1)"
-        >
-          Next ▶
-        </n-button>
-      </div>
+        <div class="scroll-area">
+          <div class="results-grid">
+            <AccountDisplay
+              v-for="AccDto in paginatedAccounts"
+              :key="AccDto.id ?? undefined"
+              :AccDto="AccDto"
+              @deleted="handleDeleted"
+              @updated="handleUpdated"
+            />
+          </div>
+        </div>
 
-      <div class="results-grid">
-        <AccountDisplay
-          v-for="AccDto in paginatedAccounts"
-          :key="AccDto.id ?? undefined"
-          :AccDto="AccDto"
-          @deleted="handleDeleted"
-          @updated="handleUpdated"
-        />
-      </div>
     </n-card>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { NAlert, NButton, NCard, NTag } from 'naive-ui';
+import { NAlert, NButton, NCard, NTag, useMessage } from 'naive-ui';
 import { getAllAccAPI, saveAccountsToCache, loadAccountsFromCache } from '@/api';
 import { useAccDtosStore } from '@/stores/accDtos';
 import AccountDisplay from '@/components/AccountDisplay.vue';
 
+const message = useMessage();
 const accDtosStore = useAccDtosStore();
 const selectedClassify = ref<string | null>(null);
 
@@ -99,16 +100,42 @@ function goToPage(page: number) {
   currentPage.value = Math.max(1, Math.min(page, totalPages.value));
 }
 
+/** 自动选中第一个分类（如果有），否则展示全部 */
+function autoSelectFirstCategory() {
+  const cats = categories.value;
+  if (cats.length) {
+    selectedClassify.value = cats[0];
+  } else {
+    selectedClassify.value = null;
+  }
+  currentPage.value = 1;
+}
+
+/**
+ * 保留当前选中的分类，仅在所选分类已不存在（如被删光）时才回退到第一个
+ */
+function ensureSelectedCategory() {
+  const cats = categories.value;
+  if (!selectedClassify.value) {
+    // 之前未选分类：保持未选状态（展示全部）
+    return;
+  }
+  if (!cats.includes(selectedClassify.value)) {
+    selectedClassify.value = cats.length ? cats[0] : null;
+  }
+}
+
 /** 从 API 拉取并缓存 */
 async function loadAccounts() {
   try {
     const accounts = await getAllAccAPI();
     saveAccountsToCache(accounts);
     accDtosStore.accDtos = accounts;
-    currentPage.value = 1;
+    ensureSelectedCategory();
+    message.success('Refresh 成功', { duration: 1000 });
   } catch (error) {
     console.error('加载账号失败:', error);
-    alert(`Load failed: ${(error as Error).message}`);
+    message.error(`Load failed: ${(error as Error).message}`, { duration: 1000 });
   }
 }
 
@@ -127,6 +154,7 @@ onMounted(() => {
   const cached = loadAccountsFromCache();
   if (cached) {
     accDtosStore.accDtos = cached;
+    autoSelectFirstCategory();
   }
   // 没有缓存时：也不自动请求，用户可点 Refresh
 });
@@ -159,8 +187,19 @@ onMounted(() => {
 
 .results-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 14px;
+}
+
+.scroll-area {
+  overflow-y: auto;
+}
+
+/* 手机端缩小 min 列宽 */
+@media (max-width: 767px) {
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .pagination-bar {

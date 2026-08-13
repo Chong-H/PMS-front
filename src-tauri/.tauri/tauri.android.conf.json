@@ -1,0 +1,16 @@
+{
+  "android": {
+    "versionName": "0.1.0",
+    "targets": ["apk", "aab"],
+    "ndk": {
+      "path": "C:\\Users\\luo\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125"
+    },
+    "permissions": ["INTERNET"],
+    "signing": {
+      "keystore": {
+        "path": "../../release.keystore",
+        "keyAlias": "pmsapp"
+      }
+    }
+  }
+}

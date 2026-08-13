@@ -31,6 +31,8 @@
 import { reactive, ref } from 'vue';
 import { NButton, NCard, NInput } from 'naive-ui';
 import { addAccountAPI } from '@/api';
+import { store } from '@/stores/storeAuth';
+import { encrypt } from '@/stores/decode';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -45,12 +47,18 @@ const form = reactive({
 });
 
 async function handleSubmit() {
+  if (!store.aeskey) {
+    alert('未配置 AES 密钥，无法加密');
+    return;
+  }
+
   submitting.value = true;
   try {
+    // acc / pin 使用纯 AES key 加密后写入后端；description 为明文不加密
     await addAccountAPI({
       web: form.web || null,
-      acc: form.acc || null,
-      pin: form.pin || null,
+      acc: form.acc ? encrypt(form.acc, store.aeskey) : null,
+      pin: form.pin ? encrypt(form.pin, store.aeskey) : null,
       description: form.description || null,
       classify: form.classify || null,
     });

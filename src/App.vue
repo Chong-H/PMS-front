@@ -55,9 +55,9 @@ onUnmounted(() => {
 
       <nav class="nav-list">
         <RouterLink to="/" class="menu-item" @click="handleNavClick">🏠 Dashboard</RouterLink>
+        <RouterLink to="/add-account" class="menu-item" @click="handleNavClick">➕ Add Acc</RouterLink>
         <RouterLink to="/Queryview" class="menu-item" @click="handleNavClick">🔍 Query</RouterLink>
         <RouterLink to="/Browse" class="menu-item" @click="handleNavClick">📂 Browse</RouterLink>
-        <RouterLink to="/add-account" class="menu-item" @click="handleNavClick">➕ Add Account</RouterLink>
         <RouterLink to="/settings" class="menu-item" @click="handleNavClick">⚙️ Settings</RouterLink>
       </nav>
 
@@ -71,9 +71,10 @@ onUnmounted(() => {
 
     <div class="main-panel">
       
-
       <main class="content-area">
-        <RouterView />
+        <n-message-provider>
+          <RouterView />
+        </n-message-provider>
       </main>
     </div>
   </div>
@@ -84,10 +85,10 @@ onUnmounted(() => {
 <style scoped>
 /* ── 全局容器 ── */
 .app-shell {
-  height: 100vh;
-  overflow: hidden;
   display: flex;
+  height: 100vh;
   background: transparent;
+  overflow: hidden; 
 }
 
 /* ── 切换按钮 ── */
@@ -158,10 +159,17 @@ onUnmounted(() => {
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     margin-left: 0 !important;
+    padding-top: calc(24px + env(safe-area-inset-top, 12px));
   }
 
   .sidebar.open {
     transform: translateX(0);
+  }
+  .app-shell{
+    margin-top: 10%;
+  }
+  .menu-toggle{
+    margin-top: 80%;
   }
 }
 
@@ -271,8 +279,8 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   padding: 24px;
-  min-height: 100vh;
   min-width: 0;
+  min-height: 0;
 }
 
 .topbar {
@@ -304,13 +312,14 @@ onUnmounted(() => {
 
 .content-area {
   flex: 1;
-  overflow: auto;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 /* ── 响应式 ── */
 @media (max-width: 768px) {
   .main-panel {
-    padding: 12px;
+    padding: 8px;
   }
 
   .topbar {

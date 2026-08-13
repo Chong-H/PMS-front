@@ -146,6 +146,9 @@ function removeKey(idx: number) {
 
 function selectKey(idx: number) {
   selectedIndex.value = idx;
+  // 选中即生效，立即更新解密密钥
+  (store as any).aeskey = aesKeys.value[idx] || null;
+  localStorage.setItem('PMS_AESKEY_SELECTED', String(idx));
 }
 
 function handleSave() {
