@@ -20,6 +20,14 @@
       <div class="settings-form">
         <n-form label-placement="top" class="form-container">
 
+          <n-form-item label="后端 API Base URL">
+            <n-input
+              v-model:value="apiBaseUrl"
+              placeholder="https://example.com/api/pms-bak"
+              clearable
+            />
+          </n-form-item>
+
           <!-- AES 密钥列表 -->
           <n-form-item label="AES 密钥列表（选中项用于解密）">
             <div class="aes-list">
@@ -81,11 +89,13 @@ import { store } from '@/stores/storeAuth';
 const LS_KEYS = 'PMS_AESKEY_LIST';
 const LS_SELECTED = 'PMS_AESKEY_SELECTED';
 const LS_AUTH_KEY = 'PMS_BACKEND_AUTH_KEY';
+const LS_API_BASE_URL = 'PMS_API_BASE_URL';
 
 const aesKeys = ref<string[]>([]);
 const selectedIndex = ref(-1);
 const newKeyInput = ref('');
 const backendAuthKey = ref('');
+const apiBaseUrl = ref('');
 
 function loadFromStorage() {
   // 加载 AES 密钥列表
@@ -102,6 +112,9 @@ function loadFromStorage() {
 
   // 加载后端鉴权 key
   backendAuthKey.value = (store as any).backendAuthKey || localStorage.getItem(LS_AUTH_KEY) || '';
+
+  // 加载后端 API Base URL
+  apiBaseUrl.value = (store as any).apiBaseUrl || localStorage.getItem(LS_API_BASE_URL) || 'https://proxy.chonghe.dpdns.org/api/pms-bak';
 }
 
 function saveToStorage() {
@@ -118,6 +131,11 @@ function saveToStorage() {
   // 保存后端鉴权 key
   (store as any).backendAuthKey = backendAuthKey.value;
   localStorage.setItem(LS_AUTH_KEY, backendAuthKey.value);
+
+  // 保存后端 API Base URL
+  const normalizedBaseUrl = apiBaseUrl.value.trim().replace(/\/+$/, '');
+  (store as any).apiBaseUrl = normalizedBaseUrl;
+  localStorage.setItem(LS_API_BASE_URL, normalizedBaseUrl);
 }
 
 function addKey() {
@@ -166,12 +184,15 @@ function handleReset() {
   selectedIndex.value = -1;
   newKeyInput.value = '';
   backendAuthKey.value = '';
+  apiBaseUrl.value = '';
   localStorage.removeItem(LS_KEYS);
   localStorage.removeItem(LS_SELECTED);
   localStorage.removeItem(LS_AUTH_KEY);
+  localStorage.removeItem(LS_API_BASE_URL);
   (store as any).aesKeyList = '';
   (store as any).aeskey = null;
   (store as any).backendAuthKey = '';
+  (store as any).apiBaseUrl = '';
   alert('已重置配置');
 }
 

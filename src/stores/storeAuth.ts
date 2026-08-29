@@ -11,6 +11,7 @@ interface StoreState {
   aeskey: string | null;       // 当前选中的 AES key
   aesKeyList: string;          // AES 密钥列表 JSON
   backendAuthKey: string;      // 后端鉴权 token
+  apiBaseUrl: string;          // 后端 API Base URL
 }
 
 function initAesKey(): string | null {
@@ -34,4 +35,5 @@ export const store = reactive<StoreState>({
   aeskey: initAesKey(),
   aesKeyList: localStorage.getItem('PMS_AESKEY_LIST') || '',
   backendAuthKey: localStorage.getItem('PMS_BACKEND_AUTH_KEY') || '',
+  apiBaseUrl: localStorage.getItem('PMS_API_BASE_URL') || '',
 });

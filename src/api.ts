@@ -2,7 +2,8 @@ import axios from 'axios';
 import type { AccountDto } from './pojo/AccountDto';
 import { store } from '@/stores/storeAuth';
 
-const API_BASE_URL = 'https://proxy.chonghe.dpdns.org/api/pms-bak';
+const DEFAULT_API_BASE_URL = 'https://your-default-api.com'; // Replace with your actual default API base URL
+const LS_API_BASE_URL = 'PMS_API_BASE_URL';
 
 type ApiResponse<T> = {
   success: boolean;
@@ -13,6 +14,11 @@ type ApiResponse<T> = {
 
 function getAuthToken(): string | null {
   return (store as any).backendAuthKey || localStorage.getItem('PMS_BACKEND_AUTH_KEY') || null;
+}
+
+function getApiBaseUrl(): string {
+  const rawBaseUrl = (store as any).apiBaseUrl || localStorage.getItem(LS_API_BASE_URL) || DEFAULT_API_BASE_URL;
+  return String(rawBaseUrl).trim().replace(/\/+$/, '') || DEFAULT_API_BASE_URL;
 }
 
 async function request<T>(method: 'get' | 'post', url: string, data?: unknown) {
@@ -27,7 +33,7 @@ async function request<T>(method: 'get' | 'post', url: string, data?: unknown) {
 
   const response = await axios.request<T>({
     method,
-    url: `${API_BASE_URL}${url}`,
+    url: `${getApiBaseUrl()}${url}`,
     data,
     headers,
     timeout: 10000,
